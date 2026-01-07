@@ -1,0 +1,464 @@
+﻿<!DOCTYPE html>
+
+<html lang="tr">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>HR Permission | Yönetim Paneli</title>
+
+
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+
+    <link rel="stylesheet" href="~/css/site.css">
+
+</head>
+
+<body class="hold-transition sidebar-mini">
+
+    <div class="wrapper">
+
+
+
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+
+            <ul class="navbar-nav">
+
+                <li class="nav-item">
+
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+
+                </li>
+
+                <li class="nav-item d-none d-sm-inline-block">
+
+                    <a href="/Home/Index" class="nav-link">Ana Sayfa</a>
+
+                </li>
+
+            </ul>
+
+
+
+            <ul class="navbar-nav ml-auto">
+
+                <li class="nav-item">
+
+                    <a href="/Account/Logout" class="nav-link text-danger">
+
+                        <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </nav>
+
+
+
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+
+            <a href="/Home/Index" class="brand-link">
+
+                <span class="brand-text font-weight-light px-3">HR YÖNETİM</span>
+
+            </a>
+
+
+
+            <div class="sidebar">
+
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+
+                    <div class="image">
+
+                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="img-circle elevation-2" alt="User Image">
+
+                    </div>
+
+                    <div class="info">
+
+                        <a href="#" class="d-block">@User.Identity?.Name</a>
+
+                    </div>
+
+                </div>
+
+
+
+                <nav class="mt-2">
+
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+
+
+
+                        <li class="nav-header">MENÜ</li>
+
+
+
+                        <li class="nav-item">
+
+                            <a href="/Home/Index" class="nav-link">
+
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+
+                                <p>Dashboard</p>
+
+                            </a>
+
+                        </li>
+
+
+
+                        @if (User.IsInRole("Admin"))
+
+                        {
+
+                            <li class="nav-header">YÖNETİM PANELİ</li>
+
+
+
+                            <li class="nav-item">
+
+                                <a href="/Employee/Index" class="nav-link">
+
+                                    <i class="nav-icon fas fa-users"></i>
+
+                                    <p>Personel Yönetimi</p>
+
+                                </a>
+
+                            </li>
+
+                            <li class="nav-item">
+
+                                <a href="/Department/Index" class="nav-link">
+
+                                    <i class="nav-icon fas fa-building"></i>
+
+                                    <p>Departmanlar</p>
+
+                                </a>
+
+                            </li>
+
+                            <li class="nav-item">
+
+                                <a href="/Leave/Index" class="nav-link">
+
+                                    <i class="nav-icon fas fa-check-double"></i>
+
+                                    <p>Onay Bekleyenler</p>
+
+                                </a>
+
+                            </li>
+
+                        }
+
+
+
+                        <li class="nav-header">KİŞİSEL İŞLEMLER</li>
+
+
+
+                        <li class="nav-item">
+
+                            <a href="/Leave/Create" class="nav-link">
+
+                                <i class="nav-icon fas fa-plus-circle"></i>
+
+                                <p>İzin Talep Et</p>
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="nav-item">
+
+                            <a href="/Leave/MyLeaves" class="nav-link">
+
+                                <i class="nav-icon fas fa-list-ul"></i>
+
+                                <p>İzinlerim</p>
+
+                            </a>
+
+                        </li>
+
+                        }
+
+
+
+                        @if (!User.IsInRole("Admin"))
+
+                        {
+
+                            <li class="nav-item">
+
+                                <a href="/Leave/Create" class="nav-link">
+
+                                    <i class="nav-icon fas fa-plus-circle"></i>
+
+                                    <p>İzin Talep Et</p>
+
+                                </a>
+
+                            </li>
+
+                            <li class="nav-item">
+
+                                <a href="/Leave/Index" class="nav-link">
+
+                                    <i class="nav-icon fas fa-list"></i>
+
+                                    <p>İzinlerim</p>
+
+                                </a>
+
+                            </li>
+
+                        }
+
+
+
+                    </ul>
+
+                </nav>
+
+            </div>
+
+        </aside>
+
+
+
+        <div class="content-wrapper">
+
+            <section class="content-header">
+
+                <div class="container-fluid">
+                </div>
+
+            </section>
+
+
+
+            <section class="content">
+
+                <div class="container-fluid">
+
+                    @RenderBody()
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+
+        <footer class="main-footer">
+
+            <div class="float-right d-none d-sm-block">
+
+                <b>Version</b> 1.0.0
+
+            </div>
+
+            <strong>HR Permission Management &copy; @DateTime.Now.Year</strong>
+
+        </footer>
+
+    </div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+
+
+
+    <script>
+
+        $(function() {
+
+            // --- 1. DATATABLES AYARLARI ---
+
+            if ($('.table').length > 0) {
+
+                $('.table').DataTable({
+
+                    "language": {
+
+                        "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/tr.json"
+
+                    },
+
+                    "paging": true,
+
+                    "lengthChange": false,
+
+                    "searching": true,
+
+                    "ordering": true,
+
+                    "info": true,
+
+                    "autoWidth": false,
+
+                    "responsive": true,
+
+                    "pageLength": 10
+
+                });
+
+            }
+
+
+
+            // --- 2. SWEETALERT TOAST AYARLARI ---
+
+            var Toast = Swal.mixin({
+
+                toast: true,
+
+                position: 'top-end',
+
+                showConfirmButton: false,
+
+                timer: 3000,
+
+                timerProgressBar: true
+
+            });
+
+
+
+            @if (TempData["Success"] != null)
+
+            {
+
+                        <text>
+
+                            Toast.fire({ icon: 'success', title: '@TempData["Success"]' })
+
+                        </text>
+
+            }
+
+
+
+            @if (TempData["Error"] != null)
+
+            {
+
+                        <text>
+
+                            Toast.fire({ icon: 'error', title: '@TempData["Error"]' })
+
+                        </text>
+
+            }
+
+
+
+            // --- 3. SAYFA GEÇİŞ EFEKTLERİ (NPROGRESS) - YENİ ---
+
+
+
+            // Ayarlar: Spinner (dönen yuvarlak) kapalı, sadece çubuk görünsün
+
+            NProgress.configure({
+
+                showSpinner: false,
+
+                minimum: 0.1,      // Başlangıç yüzdesi
+
+                speed: 800,        // Animasyon hızı (ms)
+
+                trickleSpeed: 200  // Arada bir ilerleme hızı
+
+
+
+            // Sayfa tamamen yüklendiğinde çubuğu bitir
+
+            $(window).on('load', function () {
+
+                NProgress.done();
+
+            });
+
+
+
+            // Linklere tıklandığında çubuğu başlat (Sadece geçerli linklerde)
+
+            $(document).on('click', 'a:not([href^="#"]):not([target="_blank"])', function () {
+
+                var href = $(this).attr('href');
+
+                if (href && href != '' && !href.startsWith('javascript')) {
+
+                    NProgress.start();
+
+                }
+
+            });
+
+
+
+            // Form gönderilirken çubuğu başlat
+
+            $(document).on('submit', 'form', function () {
+
+                NProgress.start();
+
+            });
+
+
+
+            // AJAX işlemlerinde (DataTables vs) çubuğu yönet
+
+            $(document).ajaxStart(function() { NProgress.start(); });
+
+            $(document).ajaxStop(function() { NProgress.done(); });
+
+        });
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,84 @@
+﻿@using HRPermissionManagement.Models
+@model List<HRPermissionManagement.Models.LeaveRequest>
+
+@{
+    ViewData["Title"] = "İzinlerim";
+}
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h3 class="card-title">İzin Geçmişim</h3>
+        <div class="card-tools">
+            <a href="/Leave/Create" class="btn btn-dark btn-sm">
+                <i class="fas fa-plus-circle"></i> Yeni İzin Talep Et
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">#</th>
+                    <th>İzin Türü</th>
+                    <th>Başlangıç</th>
+                    <th>Bitiş</th>
+                    <th>Gün</th>
+                    <th>Durum</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int siraNo = 0;
+                }
+                @foreach (var item in Model)
+                {
+                    siraNo++;
+                    <tr>
+                        <td class="font-weight-bold">@siraNo</td>
+                        <td>
+                            @if (item.LeaveType != null)
+                            {
+                                @item.LeaveType.Name
+                            }
+                            else
+                            {
+                                <span>Genel İzin</span>
+                            }
+                        </td>
+                        <td>@item.StartDate.ToString("dd.MM.yyyy")</td>
+                        <td>@item.EndDate.ToString("dd.MM.yyyy")</td>
+                        <td>
+                            <span class="badge badge-light" style="font-size: 0.9rem;">
+                                @item.NumberOfDays Gün
+                            </span>
+                        </td>
+                        <td>
+                            @* Durum Kontrolü (Enum Kullanarak) *@
+                            @if (item.Status == LeaveStatus.Onaylandi)
+                            {
+                                <span class="badge badge-success px-3 py-2">Onaylandı</span>
+                            }
+                            else if (item.Status == LeaveStatus.Reddedildi)
+                            {
+                                <span class="badge badge-danger px-3 py-2">Reddedildi</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-warning text-white px-3 py-2">Onay Bekliyor</span>
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (Model.Count == 0)
+                {
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">
+                            <i class="fas fa-folder-open fa-2x mb-2"></i><br />
+                            Henüz bir izin talebiniz bulunmuyor.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

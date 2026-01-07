@@ -1,0 +1,252 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Giriş Yap | HR Yönetim</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fff;
+            height: 100vh;
+            overflow: hidden; /* Kaydırmayı engelle */
+        }
+
+        .row-full {
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* --- SOL TARAF (Marka Alanı) --- */
+        .login-brand-section {
+            background-color: #1e293b; /* Sidebar ile aynı renk */
+            background-image: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Arka plan dekoratif daireler */
+        .decoration-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .circle-1 {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            left: -100px;
+        }
+
+        .circle-2 {
+            width: 300px;
+            height: 300px;
+            bottom: 50px;
+            right: -50px;
+        }
+
+        .brand-content {
+            z-index: 2;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .brand-title {
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .brand-subtitle {
+            font-weight: 300;
+            opacity: 0.8;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* --- SAĞ TARAF (Form Alanı) --- */
+        .login-form-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+        }
+
+        .login-header {
+            margin-bottom: 40px;
+        }
+
+            .login-header h3 {
+                font-weight: 700;
+                color: #1e293b;
+                font-size: 1.75rem;
+            }
+
+            .login-header p {
+                color: #64748b;
+            }
+
+        /* Input Tasarımı */
+        .form-group label {
+            font-weight: 500;
+            color: #334155;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            height: 50px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+            padding-left: 20px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+            .form-control:focus {
+                background-color: #fff;
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            }
+
+        /* Buton Tasarımı */
+        .btn-login {
+            height: 50px;
+            border-radius: 10px;
+            background-color: #1e293b;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            transition: transform 0.2s;
+            margin-top: 20px;
+        }
+
+            .btn-login:hover {
+                background-color: #0f172a;
+                transform: translateY(-2px);
+                color: #fff;
+            }
+
+        .footer-text {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="row row-full">
+
+        <div class="col-lg-6 d-none d-lg-flex login-brand-section">
+            <div class="decoration-circle circle-1"></div>
+            <div class="decoration-circle circle-2"></div>
+
+            <div class="brand-content">
+                <div class="mb-4">
+                    <i class="fas fa-layer-group fa-4x"></i>
+                </div>
+                <h1 class="brand-title">HR YÖNETİM</h1>
+                <p class="brand-subtitle">
+                    Personel izinleri, departman yönetimi ve<br>
+                    kurumsal süreçleriniz artık tek bir noktada.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-lg-6 login-form-section">
+            <div class="login-wrapper">
+
+                <div class="login-header">
+                    <h3>Tekrar Hoşgeldiniz!</h3>
+                    <p>Devam etmek için lütfen giriş yapın.</p>
+                </div>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 10px; font-size: 0.9rem;">
+                        <i class="fas fa-exclamation-circle mr-2"></i> @ViewBag.Error
+                    </div>
+                }
+
+                <form action="/Account/Login" method="post">
+                    <div class="form-group">
+                        <label>E-Posta Adresi</label>
+                        <input type="email" name="email" class="form-control" placeholder="ornek@sirket.com" required>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label>Şifre</label>
+                        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="rememberMe">
+                            <label class="custom-control-label text-muted" for="rememberMe" style="font-weight: 400;">Beni Hatırla</label>
+                        </div>
+                        <a href="/Account/ForgotPassword" class="text-primary small" style="text-decoration: none;">Şifremi Unuttum?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-login btn-block">
+                        Giriş Yap <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </form>
+
+                <div class="footer-text">
+                    &copy; @DateTime.Now.Year HR Permission Management System
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('ReturnUrl')) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Lütfen önce giriş yapınız.'
+                });
+            }
+        });
+    </script>
+</body>
+</html>

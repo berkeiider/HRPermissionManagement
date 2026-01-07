@@ -1,0 +1,68 @@
+﻿@model List<HRPermissionManagement.Models.Employee>
+
+@{
+    ViewData["Title"] = "Personel Listesi";
+}
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h3 class="card-title">Personel Yönetimi</h3>
+        <div class="card-tools">
+            <a href="/Employee/Create" class="btn btn-dark btn-sm">
+                <i class="fas fa-user-plus"></i> Yeni Personel Ekle
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Ad Soyad</th>
+                    <th>Departman</th>
+                    <th>E-Posta</th>
+                    <th>İşe Giriş</th>
+                    <th>İzin Hakkı</th>
+                    <th>Rol</th>
+                    <th class="text-right">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="font-weight-bold">@item.Name @item.Surname</td>
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                @item.Department?.Name
+                            </span>
+                        </td>
+                        <td>@item.Email</td>
+                        <td>@item.StartDate.ToString("dd.MM.yyyy")</td>
+                        <td>@item.AnnualLeaveRight Gün</td>
+                        <td>
+                            @if (item.IsAdmin)
+                            {
+                                <span class="badge bg-danger">Yönetici</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-info">Personel</span>
+                            }
+                        </td>
+                        <td class="text-right">
+                            <a href="/Employee/Edit/@item.Id" class="btn btn-outline-info btn-sm">
+                                <i class="fas fa-edit"></i>
+                            </a>
+
+                            <a href="/Employee/Delete/@item.Id"
+                               class="btn btn-outline-danger btn-sm"
+                               onclick="return confirm('Bu personeli silmek istediğinize emin misiniz?');">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

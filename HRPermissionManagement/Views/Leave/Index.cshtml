@@ -1,0 +1,92 @@
+﻿@model List<HRPermissionManagement.Models.LeaveRequest>
+
+@{
+    ViewData["Title"] = "İzin Talepleri";
+
+    // Controller'dan gelen verileri değişkenlere alalım
+    int currentUserId = ViewBag.CurrentUserId ?? 0;
+    bool isAdmin = ViewBag.IsAdmin ?? false;
+    List<int> managedDeptIds = ViewBag.ManagedDeptIds as List<int> ?? new List<int>();
+}
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h3 class="card-title">İzin Hareketleri</h3>
+        <div class="card-tools">
+            <a href="/Leave/Create" class="btn btn-dark btn-sm">
+                <i class="fas fa-plus"></i> İzin Talep Et
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0">
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-warning m-3">@TempData["Error"]</div>
+        }
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Personel</th>
+                    <th>İzin Türü</th>
+                    <th>Tarihler</th>
+                    <th>Gün</th>
+                    <th>Durum</th>
+                    <th class="text-right">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    // Bu satırdaki talep için, giriş yapan kullanıcı YETKİLİ Mİ?
+                    // Yetkili olması için: Admin olmalı VEYA (Talep eden kişinin departmanının yöneticisi olmalı VE talep eden kendisi olmamalı)
+                    bool canApprove = isAdmin || (managedDeptIds.Contains(item.Employee.DepartmentId) && item.EmployeeId != currentUserId);
+
+                    <tr>
+                        <td class="font-weight-bold">
+                            @item.Employee?.Name @item.Employee?.Surname
+                            <br />
+                            <small class="text-muted">@item.Employee?.Department?.Name</small>
+                        </td>
+                        <td>@item.LeaveType?.Name</td>
+                        <td>
+                            <small class="d-block text-muted">@item.StartDate.ToString("dd.MM") - @item.EndDate.ToString("dd.MM.yyyy")</small>
+                        </td>
+                        <td><span class="badge bg-secondary">@item.NumberOfDays</span></td>
+                        <td>
+                            @if (item.Status == HRPermissionManagement.Models.LeaveStatus.Bekliyor)
+                            {
+                                <span class="badge bg-warning text-dark">Bekliyor</span>
+                            }
+                            else if (item.Status == HRPermissionManagement.Models.LeaveStatus.Onaylandi)
+                            {
+                                <span class="badge bg-success">Onaylandı</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Reddedildi</span>
+                            }
+                        </td>
+
+                        <td class="text-right">
+                            <a href="/Leave/Details/@item.Id" class="btn btn-outline-primary btn-sm" title="Detay / Yazdır">
+                                <i class="fas fa-file-alt"></i>
+                            </a>
+
+                            @if (canApprove && item.Status == HRPermissionManagement.Models.LeaveStatus.Bekliyor)
+                            {
+                                <a href="/Leave/Approve/@item.Id" class="btn btn-success btn-sm" title="Onayla">
+                                    <i class="fas fa-check"></i>
+                                </a>
+                                <a href="/Leave/Reject/@item.Id" class="btn btn-danger btn-sm" title="Reddet">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

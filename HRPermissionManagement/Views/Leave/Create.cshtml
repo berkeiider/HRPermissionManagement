@@ -1,0 +1,63 @@
+﻿@model HRPermissionManagement.Models.LeaveRequest
+
+@{
+    ViewData["Title"] = "İzin Talep Et";
+}
+
+<div class="row mt-4">
+    <div class="col-md-6 offset-md-3">
+        <div class="card card-dark">
+            <div class="card-header">
+                <h3 class="card-title">Yeni İzin Talebi</h3>
+            </div>
+            <div class="card-body">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <form asp-action="Create" method="post">
+
+                    <div class="mb-3">
+                        <label>İzin Türü</label>
+                        <select asp-for="LeaveTypeId" class="form-control" required>
+                            @{
+                                var types = ViewBag.LeaveTypes as List<HRPermissionManagement.Models.LeaveType> ?? new List<HRPermissionManagement.Models.LeaveType>();
+                            }
+                            @foreach (var tip in types)
+                            {
+                                <option value="@tip.Id">@tip.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label>Başlangıç Tarihi</label>
+                                <input type="date" asp-for="StartDate" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label>Bitiş Tarihi</label>
+                                <input type="date" asp-for="EndDate" class="form-control" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Açıklama / Mazeret</label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="İzin nedeninizi kısaca belirtiniz..."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <a href="/Leave/Index" class="btn btn-outline-secondary mr-2">İptal</a>
+                        <button type="submit" class="btn btn-dark">
+                            <i class="fas fa-paper-plane"></i> Talebi Gönder
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

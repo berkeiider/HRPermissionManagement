@@ -1,0 +1,88 @@
+﻿@model HRPermissionManagement.Models.Employee
+
+@{
+    ViewData["Title"] = "Personel Düzenle";
+}
+
+<div class="row mt-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="card card-info">
+            <div class="card-header">
+                <h3 class="card-title">Personel Bilgilerini Düzenle</h3>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label>Ad</label>
+                                <input type="text" asp-for="Name" class="form-control" required />
+                            </div>
+                            <div class="mb-3">
+                                <label>Soyad</label>
+                                <input type="text" asp-for="Surname" class="form-control" required />
+                            </div>
+                            <div class="mb-3">
+                                <label>Departman</label>
+                                <select asp-for="DepartmentId" class="form-control" required>
+                                    <option value="">Seçiniz...</option>
+                                    @{
+                                        var depts = ViewBag.Departmanlar as List<HRPermissionManagement.Models.Department> ?? new List<HRPermissionManagement.Models.Department>();
+                                    }
+                                    @foreach (var dept in depts)
+                                    {
+                                        <option value="@dept.Id">@dept.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label>İşe Giriş Tarihi</label>
+                                <input type="date" asp-for="StartDate" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label>E-Posta (Kullanıcı Adı)</label>
+                                <input type="email" asp-for="Email" class="form-control" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Şifre</label>
+                                <input type="password" asp-for="Password" class="form-control"
+                                       placeholder="Değiştirmek istemiyorsanız boş bırakın..."
+                                       autocomplete="new-password" />
+
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle"></i> Sadece şifreyi değiştirmek istiyorsanız buraya yeni şifreyi yazın.
+                                </small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Yıllık İzin Hakkı</label>
+                                <input type="number" asp-for="AnnualLeaveRight" class="form-control" />
+                            </div>
+
+                            <div class="mb-3 pt-4">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="isAdminCheck" asp-for="IsAdmin">
+                                    <label class="custom-control-label" for="isAdminCheck">Yönetici Yetkisi Var</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-3">
+                        <a href="/Employee/Index" class="btn btn-outline-secondary mr-2">İptal</a>
+                        <button type="submit" class="btn btn-info">
+                            <i class="fas fa-save"></i> Değişiklikleri Kaydet
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
