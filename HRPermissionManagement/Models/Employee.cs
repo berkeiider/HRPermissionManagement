@@ -16,10 +16,10 @@ namespace HRPermissionManagement.Models
         [Required, EmailAddress]
         public string Email { get; set; } = string.Empty;
 
-        [Required]
+        [Required, MaxLength(255)] // 50 yerine 255 yapın
         public string Password { get; set; } = string.Empty;
 
-        public int AnnualLeaveRight { get; set; } = 14;
+        public double AnnualLeaveRight { get; set; } = 14;
         public bool IsAdmin { get; set; } = false;
         public DateTime StartDate { get; set; }
 

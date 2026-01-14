@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRPermissionManagement.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260104140248_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260113151756_AddHourlyLeaveSupport")]
+    partial class AddHourlyLeaveSupport
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,11 +33,16 @@ namespace HRPermissionManagement.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ManagerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ManagerId");
 
                     b.ToTable("Departments");
 
@@ -67,8 +72,8 @@ namespace HRPermissionManagement.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AnnualLeaveRight")
-                        .HasColumnType("int");
+                    b.Property<double>("AnnualLeaveRight")
+                        .HasColumnType("float");
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
@@ -87,7 +92,8 @@ namespace HRPermissionManagement.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -107,12 +113,12 @@ namespace HRPermissionManagement.Migrations
                         new
                         {
                             Id = 1,
-                            AnnualLeaveRight = 30,
+                            AnnualLeaveRight = 30.0,
                             DepartmentId = 1,
                             Email = "admin@sirket.com",
                             IsAdmin = true,
                             Name = "Admin",
-                            Password = "123",
+                            Password = "202CB962AC59075B964B07152D234B70",
                             StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Surname = "Yönetici"
                         });
@@ -127,7 +133,6 @@ namespace HRPermissionManagement.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("EmployeeId")
@@ -136,17 +141,23 @@ namespace HRPermissionManagement.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<TimeSpan?>("EndHour")
+                        .HasColumnType("time");
+
                     b.Property<int>("LeaveTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumberOfDays")
-                        .HasColumnType("int");
+                    b.Property<double>("NumberOfDays")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("RequestDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan?>("StartHour")
+                        .HasColumnType("time");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -171,6 +182,9 @@ namespace HRPermissionManagement.Migrations
                     b.Property<bool>("DoesItAffectBalance")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsHourly")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -184,20 +198,40 @@ namespace HRPermissionManagement.Migrations
                         {
                             Id = 1,
                             DoesItAffectBalance = true,
+                            IsHourly = false,
                             Name = "Yıllık İzin"
                         },
                         new
                         {
                             Id = 2,
                             DoesItAffectBalance = false,
+                            IsHourly = false,
                             Name = "Hastalık Raporu"
                         },
                         new
                         {
                             Id = 3,
                             DoesItAffectBalance = true,
+                            IsHourly = false,
                             Name = "Mazeret İzni"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DoesItAffectBalance = true,
+                            IsHourly = true,
+                            Name = "Saatlik İzin"
                         });
+                });
+
+            modelBuilder.Entity("HRPermissionManagement.Models.Department", b =>
+                {
+                    b.HasOne("HRPermissionManagement.Models.Employee", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Manager");
                 });
 
             modelBuilder.Entity("HRPermissionManagement.Models.Employee", b =>
@@ -205,7 +239,7 @@ namespace HRPermissionManagement.Migrations
                     b.HasOne("HRPermissionManagement.Models.Department", "Department")
                         .WithMany("Employees")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Department");

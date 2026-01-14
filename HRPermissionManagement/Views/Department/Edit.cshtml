@@ -4,42 +4,62 @@
     ViewData["Title"] = "Departman Düzenle";
 }
 
-<div class="row mt-4">
-    <div class="col-md-6 offset-md-3">
-        <div class="card card-info">
-            <div class="card-header">
-                <h3 class="card-title">Departman Düzenle</h3>
-            </div>
-            <div class="card-body">
-                <form asp-action="Edit" method="post">
-                    <input type="hidden" asp-for="Id" />
+<div class="max-w-xl mx-auto mt-8">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50">
+            <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                <i class="fas fa-edit mr-2 text-brand-600"></i>
+                Departman Düzenle
+            </h3>
+        </div>
+        <div class="p-8">
+            <form asp-action="Edit" method="post" class="space-y-6">
+                <input type="hidden" asp-for="Id" />
 
-                    <div class="mb-3">
-                        <label class="form-label">Departman Adı</label>
-                        <input type="text" asp-for="Name" class="form-control" required />
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Departman Sorumlusu</label>
-                        <select asp-for="ManagerId" class="form-control">
+                <div>
+                    <label asp-for="Name" class="block text-sm font-medium text-slate-700 mb-1">Departman Adı</label>
+                    <input type="text" asp-for="Name"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring focus:ring-brand-500 focus:ring-opacity-20 transition duration-150 ease-in-out sm:text-sm py-2 px-3"
+                        required />
+                    <span asp-validation-for="Name" class="text-sm text-red-500 mt-1 block"></span>
+                </div>
+
+                <div>
+                    <label asp-for="ManagerId" class="block text-sm font-medium text-slate-700 mb-1">Departman
+                        Sorumlusu</label>
+                    <div class="relative">
+                        <select asp-for="ManagerId"
+                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring focus:ring-brand-500 focus:ring-opacity-20 transition duration-150 ease-in-out sm:text-sm py-2.5 px-3 appearance-none">
                             <option value="">-- Sorumlu Yok --</option>
                             @{
-                                var calisanlar = ViewBag.Employees as List<HRPermissionManagement.Models.Employee> ?? new List<HRPermissionManagement.Models.Employee>();
+                                var calisanlar = ViewBag.Employees as List<HRPermissionManagement.Models.Employee> ?? new
+                                List<HRPermissionManagement.Models.Employee>();
                             }
                             @foreach (var emp in calisanlar)
                             {
                                 <option value="@emp.Id">@emp.Name @emp.Surname</option>
                             }
                         </select>
-                        <small class="text-muted">Listede sadece bu departmana kayıtlı personeller görünür.</small>
+                        <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-500">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </div>
                     </div>
-                    <div class="d-flex justify-content-between">
-                        <a href="/Department/Index" class="btn btn-outline-secondary">İptal</a>
-                        <button type="submit" class="btn btn-info">Güncelle</button>
-                    </div>
+                    <p class="text-xs text-slate-500 mt-1">Listede sadece bu departmana kayıtlı personeller görünür.</p>
+                </div>
 
-                </form>
-            </div>
+                <div class="flex items-center justify-end pt-4 border-t border-slate-100">
+                    <a href="/Department/Index"
+                        class="mr-4 text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
+                        İptal
+                    </a>
+                    <button type="submit"
+                        class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-colors">
+                        <i class="fas fa-save mr-2 mt-0.5"></i> Güncelle
+                    </button>
+                </div>
+
+            </form>
         </div>
     </div>
 </div>

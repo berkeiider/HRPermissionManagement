@@ -4,9 +4,10 @@ namespace HRPermissionManagement.Models
 {
     public enum LeaveStatus
     {
-        Bekliyor = 0,
-        Onaylandi = 1,
-        Reddedildi = 2
+        Bekliyor = 0,           // Personel talep etti, Müdür onayı bekliyor
+        Onaylandi = 1,          // Admin son onayı verdi (Tamamlandı)
+        Reddedildi = 2,         // Müdür veya Admin reddetti
+        YoneticiOnayladi = 3    // Müdür onayladı, Admin onayı bekliyor (YENİ DURUM)
     }
 
     public class LeaveRequest
@@ -16,9 +17,13 @@ namespace HRPermissionManagement.Models
 
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public int NumberOfDays { get; set; }
 
-        // Açıklama zorunlu olmasın, boş olabilir (?)
+        public TimeSpan? StartHour { get; set; } // Saatlik izin başlangıç saati
+        public TimeSpan? EndHour { get; set; }   // Saatlik izin bitiş saati
+
+        public double NumberOfDays { get; set; } // int -> double (0.5 gün vb. için)
+
+        // Açıklama zorunlu olmasın, boş olabilir
         public string? Description { get; set; }
 
         public DateTime RequestDate { get; set; } = DateTime.Now;

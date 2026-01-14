@@ -2,7 +2,7 @@
 
 var builder = WebApplication.CreateBuilder(args);
 // 1. Veritabanı Servisi
-builder.Services.AddDbContext<HRPermissionManagement.Data.AppDbContext>(options =>
+builder.Services.AddDbContext<HRPermissionManagement.AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 2. Login (Authentication) Servisi

@@ -1,464 +1,161 @@
 ﻿<!DOCTYPE html>
-
 <html lang="tr">
 
 <head>
-
     <meta charset="utf-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>HR Permission | Yönetim Paneli</title>
 
-
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
-
-    <link rel="stylesheet" href="~/css/site.css">
-
+    <link rel="stylesheet" href="~/css/output.css">
 </head>
 
-<body class="hold-transition sidebar-mini">
+<body class="bg-gray-50 font-sans text-gray-900 antialiased">
+    <div class="min-h-screen flex flex-col md:flex-row">
 
-    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside class="w-full md:w-64 bg-slate-900 text-white flex-shrink-0">
+            <div class="p-4 border-b border-slate-800 flex items-center justify-between md:justify-start">
+                <a href="/Home/Index" class="text-xl font-bold tracking-wide flex items-center">
+                    <i class="fas fa-users-cog mr-2 text-brand-500"></i>
+                    <span>HR YÖNETİM</span>
+                </a>
+                <button class="md:hidden text-gray-400 hover:text-white"
+                    onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                    <i class="fas fa-bars fa-lg"></i>
+                </button>
+            </div>
 
+            <div id="mobile-menu" class="hidden md:block">
+                <div class="p-4 border-b border-slate-800">
+                    <div class="flex items-center space-x-3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                            class="h-10 w-10 rounded-full border-2 border-slate-700" alt="User Image">
+                        <div>
+                            <p class="text-sm font-medium">Hoşgeldiniz,</p>
+                            <p class="text-sm font-bold truncate">@User.Identity?.Name</p>
+                        </div>
+                    </div>
+                </div>
 
-
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-
-            <ul class="navbar-nav">
-
-                <li class="nav-item">
-
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-
-                </li>
-
-                <li class="nav-item d-none d-sm-inline-block">
-
-                    <a href="/Home/Index" class="nav-link">Ana Sayfa</a>
-
-                </li>
-
-            </ul>
-
-
-
-            <ul class="navbar-nav ml-auto">
-
-                <li class="nav-item">
-
-                    <a href="/Account/Logout" class="nav-link text-danger">
-
-                        <i class="fas fa-sign-out-alt"></i> Çıkış Yap
-
+                <nav class="mt-4 px-2 space-y-1">
+                    <p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Genel</p>
+                    <a href="/Home/Index"
+                        class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">
+                        <i class="fas fa-tachometer-alt mr-3 text-slate-400 group-hover:text-white"></i>
+                        Dashboard
                     </a>
 
-                </li>
-
-            </ul>
-
-        </nav>
-
-
-
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
-
-            <a href="/Home/Index" class="brand-link">
-
-                <span class="brand-text font-weight-light px-3">HR YÖNETİM</span>
-
-            </a>
-
-
-
-            <div class="sidebar">
-
-                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-
-                    <div class="image">
-
-                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="img-circle elevation-2" alt="User Image">
-
-                    </div>
-
-                    <div class="info">
-
-                        <a href="#" class="d-block">@User.Identity?.Name</a>
-
-                    </div>
-
-                </div>
-
-
-
-                <nav class="mt-2">
-
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
-
-
-
-                        <li class="nav-header">MENÜ</li>
-
-
-
-                        <li class="nav-item">
-
-                            <a href="/Home/Index" class="nav-link">
-
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-
-                                <p>Dashboard</p>
-
-                            </a>
-
-                        </li>
-
-
+                    @if (User.IsInRole("Admin") || User.HasClaim(c => c.Type == "IsManager"))
+                    {
+                        <p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-2">Yönetim
+                            Paneli</p>
 
                         @if (User.IsInRole("Admin"))
-
                         {
-
-                            <li class="nav-header">YÖNETİM PANELİ</li>
-
-
-
-                            <li class="nav-item">
-
-                                <a href="/Employee/Index" class="nav-link">
-
-                                    <i class="nav-icon fas fa-users"></i>
-
-                                    <p>Personel Yönetimi</p>
-
-                                </a>
-
-                            </li>
-
-                            <li class="nav-item">
-
-                                <a href="/Department/Index" class="nav-link">
-
-                                    <i class="nav-icon fas fa-building"></i>
-
-                                    <p>Departmanlar</p>
-
-                                </a>
-
-                            </li>
-
-                            <li class="nav-item">
-
-                                <a href="/Leave/Index" class="nav-link">
-
-                                    <i class="nav-icon fas fa-check-double"></i>
-
-                                    <p>Onay Bekleyenler</p>
-
-                                </a>
-
-                            </li>
-
-                        }
-
-
-
-                        <li class="nav-header">KİŞİSEL İŞLEMLER</li>
-
-
-
-                        <li class="nav-item">
-
-                            <a href="/Leave/Create" class="nav-link">
-
-                                <i class="nav-icon fas fa-plus-circle"></i>
-
-                                <p>İzin Talep Et</p>
-
+                            <a href="/Employee/Index"
+                                class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">
+                                <i class="fas fa-users mr-3 text-slate-400 group-hover:text-white"></i>
+                                Personel Yönetimi
                             </a>
-
-                        </li>
-
-
-
-                        <li class="nav-item">
-
-                            <a href="/Leave/MyLeaves" class="nav-link">
-
-                                <i class="nav-icon fas fa-list-ul"></i>
-
-                                <p>İzinlerim</p>
-
+                            <a href="/Department/Index"
+                                class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">
+                                <i class="fas fa-building mr-3 text-slate-400 group-hover:text-white"></i>
+                                Departmanlar
                             </a>
-
-                        </li>
-
                         }
 
+                        <a href="/Leave/Index"
+                            class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">
+                            <i class="fas fa-check-double mr-3 text-slate-400 group-hover:text-white"></i>
+                            Onay Bekleyenler
+                        </a>
+                        <a href="/Leave/History"
+                            class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">
+                            <i class="fas fa-history mr-3 text-slate-400 group-hover:text-white"></i>
+                            İzin Geçmişleri
+                        </a>
+                    }
 
-
-                        @if (!User.IsInRole("Admin"))
-
-                        {
-
-                            <li class="nav-item">
-
-                                <a href="/Leave/Create" class="nav-link">
-
-                                    <i class="nav-icon fas fa-plus-circle"></i>
-
-                                    <p>İzin Talep Et</p>
-
-                                </a>
-
-                            </li>
-
-                            <li class="nav-item">
-
-                                <a href="/Leave/Index" class="nav-link">
-
-                                    <i class="nav-icon fas fa-list"></i>
-
-                                    <p>İzinlerim</p>
-
-                                </a>
-
-                            </li>
-
-                        }
-
-
-
-                    </ul>
-
+                    <p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-2">Kişisel
+                        İşlemler</p>
+                    <a href="/Leave/Create"
+                        class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">
+                        <i class="fas fa-plus-circle mr-3 text-slate-400 group-hover:text-white"></i>
+                        İzin Talep Et
+                    </a>
+                    <a href="/Leave/MyLeaves"
+                        class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">
+                        <i class="fas fa-list-ul mr-3 text-slate-400 group-hover:text-white"></i>
+                        İzinlerim
+                    </a>
                 </nav>
-
             </div>
 
+            <div class="p-4 border-t border-slate-800 hidden md:block">
+                <a href="/Account/Logout"
+                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Çıkış Yap
+                </a>
+            </div>
         </aside>
 
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Mobile Header -->
+            <header class="md:hidden bg-white shadow-sm p-4 flex justify-between items-center">
+                <span class="font-bold text-gray-700">HR Permission</span>
+                <a href="/Account/Logout" class="text-sm font-medium text-red-600 hover:text-red-800">
+                    <i class="fas fa-sign-out-alt mr-1"></i> Çıkış
+                </a>
+            </header>
 
-
-        <div class="content-wrapper">
-
-            <section class="content-header">
-
-                <div class="container-fluid">
-                </div>
-
-            </section>
-
-
-
-            <section class="content">
-
-                <div class="container-fluid">
-
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-4 md:p-8">
+                <div class="max-w-7xl mx-auto">
                     @RenderBody()
-
                 </div>
+            </main>
 
-            </section>
 
         </div>
-
-
-
-        <footer class="main-footer">
-
-            <div class="float-right d-none d-sm-block">
-
-                <b>Version</b> 1.0.0
-
-            </div>
-
-            <strong>HR Permission Management &copy; @DateTime.Now.Year</strong>
-
-        </footer>
-
     </div>
 
-
-
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
-
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
-    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
-
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
-
-
+    <!-- Alpine.js for interactions (optional but good for Tailwind) -->
+    <script src="//unpkg.com/alpinejs" defer></script>
 
     <script>
-
-        $(function() {
-
-            // --- 1. DATATABLES AYARLARI ---
-
-            if ($('.table').length > 0) {
-
-                $('.table').DataTable({
-
-                    "language": {
-
-                        "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/tr.json"
-
-                    },
-
-                    "paging": true,
-
-                    "lengthChange": false,
-
-                    "searching": true,
-
-                    "ordering": true,
-
-                    "info": true,
-
-                    "autoWidth": false,
-
-                    "responsive": true,
-
-                    "pageLength": 10
-
-                });
-
-            }
-
-
-
-            // --- 2. SWEETALERT TOAST AYARLARI ---
-
+        $(function () {
+            // SweetAlert Configuration
             var Toast = Swal.mixin({
-
                 toast: true,
-
                 position: 'top-end',
-
                 showConfirmButton: false,
-
                 timer: 3000,
-
                 timerProgressBar: true
-
             });
 
+        @if (TempData["Success"] != null)
+        {
+            <text>
+                        Toast.fire({icon: 'success', title: '@TempData["Success"]' })
+            </text>
+        }
 
-
-            @if (TempData["Success"] != null)
-
-            {
-
-                        <text>
-
-                            Toast.fire({ icon: 'success', title: '@TempData["Success"]' })
-
-                        </text>
-
-            }
-
-
-
-            @if (TempData["Error"] != null)
-
-            {
-
-                        <text>
-
-                            Toast.fire({ icon: 'error', title: '@TempData["Error"]' })
-
-                        </text>
-
-            }
-
-
-
-            // --- 3. SAYFA GEÇİŞ EFEKTLERİ (NPROGRESS) - YENİ ---
-
-
-
-            // Ayarlar: Spinner (dönen yuvarlak) kapalı, sadece çubuk görünsün
-
-            NProgress.configure({
-
-                showSpinner: false,
-
-                minimum: 0.1,      // Başlangıç yüzdesi
-
-                speed: 800,        // Animasyon hızı (ms)
-
-                trickleSpeed: 200  // Arada bir ilerleme hızı
-
-
-
-            // Sayfa tamamen yüklendiğinde çubuğu bitir
-
-            $(window).on('load', function () {
-
-                NProgress.done();
-
-            });
-
-
-
-            // Linklere tıklandığında çubuğu başlat (Sadece geçerli linklerde)
-
-            $(document).on('click', 'a:not([href^="#"]):not([target="_blank"])', function () {
-
-                var href = $(this).attr('href');
-
-                if (href && href != '' && !href.startsWith('javascript')) {
-
-                    NProgress.start();
-
-                }
-
-            });
-
-
-
-            // Form gönderilirken çubuğu başlat
-
-            $(document).on('submit', 'form', function () {
-
-                NProgress.start();
-
-            });
-
-
-
-            // AJAX işlemlerinde (DataTables vs) çubuğu yönet
-
-            $(document).ajaxStart(function() { NProgress.start(); });
-
-            $(document).ajaxStop(function() { NProgress.done(); });
-
+        @if (TempData["Error"] != null)
+        {
+            <text>
+                        Toast.fire({icon: 'error', title: '@TempData["Error"]' })
+            </text>
+        }
         });
-
     </script>
-
 </body>
 
 </html>

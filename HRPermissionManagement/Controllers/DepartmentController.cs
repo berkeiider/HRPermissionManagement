@@ -1,19 +1,13 @@
-﻿using HRPermissionManagement.Data;
-using HRPermissionManagement.Models;
+﻿using HRPermissionManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HRPermissionManagement.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class DepartmentController : Controller
+    public class DepartmentController(AppDbContext context) : Controller
     {
-        private readonly AppDbContext _context;
-
-        public DepartmentController(AppDbContext context)
-        {
-            _context = context;
-        }
+        private readonly AppDbContext _context = context;
 
         // 1. LİSTELEME (Index)
         public IActionResult Index()

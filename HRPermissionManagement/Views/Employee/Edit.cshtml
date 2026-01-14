@@ -4,85 +4,113 @@
     ViewData["Title"] = "Personel Düzenle";
 }
 
-<div class="row mt-4">
-    <div class="col-md-8 offset-md-2">
-        <div class="card card-info">
-            <div class="card-header">
-                <h3 class="card-title">Personel Bilgilerini Düzenle</h3>
-            </div>
-            <div class="card-body">
-                <form asp-action="Edit" method="post">
-                    <input type="hidden" asp-for="Id" />
+<div class="max-w-4xl mx-auto mt-8">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50">
+            <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                <i class="fas fa-user-edit mr-2 text-brand-600"></i>
+                Personel Bilgilerini Düzenle
+            </h3>
+        </div>
+        <div class="p-8">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="Id" />
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label>Ad</label>
-                                <input type="text" asp-for="Name" class="form-control" required />
-                            </div>
-                            <div class="mb-3">
-                                <label>Soyad</label>
-                                <input type="text" asp-for="Surname" class="form-control" required />
-                            </div>
-                            <div class="mb-3">
-                                <label>Departman</label>
-                                <select asp-for="DepartmentId" class="form-control" required>
-                                    <option value="">Seçiniz...</option>
-                                    @{
-                                        var depts = ViewBag.Departmanlar as List<HRPermissionManagement.Models.Department> ?? new List<HRPermissionManagement.Models.Department>();
-                                    }
-                                    @foreach (var dept in depts)
-                                    {
-                                        <option value="@dept.Id">@dept.Name</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label>İşe Giriş Tarihi</label>
-                                <input type="date" asp-for="StartDate" class="form-control" />
-                            </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Sol Kolon -->
+                    <div class="space-y-6">
+                        <div>
+                            <label asp-for="Name" class="block text-sm font-medium text-slate-700 mb-1">Ad</label>
+                            <input type="text" asp-for="Name"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring focus:ring-brand-500 focus:ring-opacity-20 transition duration-150 ease-in-out sm:text-sm py-2 px-3"
+                                required />
                         </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label>E-Posta (Kullanıcı Adı)</label>
-                                <input type="email" asp-for="Email" class="form-control" required />
-                            </div>
-
-                            <div class="mb-3">
-                                <label>Şifre</label>
-                                <input type="password" asp-for="Password" class="form-control"
-                                       placeholder="Değiştirmek istemiyorsanız boş bırakın..."
-                                       autocomplete="new-password" />
-
-                                <small class="text-muted">
-                                    <i class="fas fa-info-circle"></i> Sadece şifreyi değiştirmek istiyorsanız buraya yeni şifreyi yazın.
-                                </small>
-                            </div>
-
-                            <div class="mb-3">
-                                <label>Yıllık İzin Hakkı</label>
-                                <input type="number" asp-for="AnnualLeaveRight" class="form-control" />
-                            </div>
-
-                            <div class="mb-3 pt-4">
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="isAdminCheck" asp-for="IsAdmin">
-                                    <label class="custom-control-label" for="isAdminCheck">Yönetici Yetkisi Var</label>
-                                </div>
-                            </div>
+                        <div>
+                            <label asp-for="Surname" class="block text-sm font-medium text-slate-700 mb-1">Soyad</label>
+                            <input type="text" asp-for="Surname"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring focus:ring-brand-500 focus:ring-opacity-20 transition duration-150 ease-in-out sm:text-sm py-2 px-3"
+                                required />
+                        </div>
+                        <div>
+                            <label asp-for="DepartmentId"
+                                class="block text-sm font-medium text-slate-700 mb-1">Departman</label>
+                            <select asp-for="DepartmentId"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring focus:ring-brand-500 focus:ring-opacity-20 transition duration-150 ease-in-out sm:text-sm py-2 px-3"
+                                required>
+                                <option value="">Seçiniz...</option>
+                                @{
+                                    var depts = ViewBag.Departmanlar as List<HRPermissionManagement.Models.Department> ??
+                                    new List<HRPermissionManagement.Models.Department>();
+                                }
+                                @foreach (var dept in depts)
+                                {
+                                    <option value="@dept.Id">@dept.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div>
+                            <label asp-for="StartDate" class="block text-sm font-medium text-slate-700 mb-1">İşe Giriş
+                                Tarihi</label>
+                            <input type="date" asp-for="StartDate"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring focus:ring-brand-500 focus:ring-opacity-20 transition duration-150 ease-in-out sm:text-sm py-2 px-3" />
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-end mt-3">
-                        <a href="/Employee/Index" class="btn btn-outline-secondary mr-2">İptal</a>
-                        <button type="submit" class="btn btn-info">
-                            <i class="fas fa-save"></i> Değişiklikleri Kaydet
-                        </button>
-                    </div>
+                    <!-- Sağ Kolon -->
+                    <div class="space-y-6">
+                        <div>
+                            <label asp-for="Email" class="block text-sm font-medium text-slate-700 mb-1">E-Posta
+                                (Kullanıcı Adı)</label>
+                            <input type="email" asp-for="Email"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring focus:ring-brand-500 focus:ring-opacity-20 transition duration-150 ease-in-out sm:text-sm py-2 px-3"
+                                required />
+                        </div>
 
-                </form>
-            </div>
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                            <label asp-for="Password" class="block text-sm font-medium text-slate-800 mb-1">Şifre
+                                Değiştir</label>
+                            <input type="password" asp-for="Password"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring focus:ring-brand-500 focus:ring-opacity-20 transition duration-150 ease-in-out sm:text-sm py-2 px-3"
+                                placeholder="Değiştirmek istemiyorsanız boş bırakın..." autocomplete="new-password" />
+                            <div class="flex items-start mt-2">
+                                <i class="fas fa-info-circle text-blue-500 mt-0.5 mr-2"></i>
+                                <span class="text-xs text-blue-600">Sadece şifreyi güncellemek istiyorsanız burayı
+                                    doldurun. Aksi takdirde boş bırakın.</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label asp-for="AnnualLeaveRight"
+                                class="block text-sm font-medium text-slate-700 mb-1">Yıllık İzin Hakkı</label>
+                            <input type="number" asp-for="AnnualLeaveRight"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring focus:ring-brand-500 focus:ring-opacity-20 transition duration-150 ease-in-out sm:text-sm py-2 px-3" />
+                        </div>
+
+                        <div class="pt-2">
+                            <div class="flex items-center">
+                                <input id="isAdminCheck" type="checkbox" asp-for="IsAdmin"
+                                    class="h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded">
+                                <label for="isAdminCheck"
+                                    class="ml-2 block text-sm text-slate-700 hover:cursor-pointer font-medium">
+                                    Yönetici Yetkisi Var
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end mt-8 pt-6 border-t border-slate-100">
+                    <a href="/Employee/Index"
+                        class="mr-4 text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
+                        İptal
+                    </a>
+                    <button type="submit"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 transition-colors">
+                        <i class="fas fa-save mr-2"></i> Değişiklikleri Kaydet
+                    </button>
+                </div>
+
+            </form>
         </div>
     </div>
 </div>

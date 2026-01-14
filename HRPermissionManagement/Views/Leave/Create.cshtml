@@ -4,60 +4,147 @@
     ViewData["Title"] = "İzin Talep Et";
 }
 
-<div class="row mt-4">
-    <div class="col-md-6 offset-md-3">
-        <div class="card card-dark">
-            <div class="card-header">
-                <h3 class="card-title">Yeni İzin Talebi</h3>
-            </div>
-            <div class="card-body">
+<div class="max-w-2xl mx-auto mt-8">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50">
+            <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                <i class="fas fa-file-contract mr-2 text-brand-600"></i>
+                Yeni İzin Talebi
+            </h3>
+        </div>
+        <div class="p-8">
+            <div asp-validation-summary="ModelOnly"
+                class="text-red-500 text-sm mb-4 bg-red-50 p-3 rounded-lg border border-red-100"></div>
 
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <form asp-action="Create" method="post" class="space-y-6">
 
-                <form asp-action="Create" method="post">
-
-                    <div class="mb-3">
-                        <label>İzin Türü</label>
-                        <select asp-for="LeaveTypeId" class="form-control" required>
+                <div>
+                    <label asp-for="LeaveTypeId" class="block text-sm font-medium text-slate-700 mb-1">İzin Türü</label>
+                    <div class="relative">
+                        <select asp-for="LeaveTypeId"
+                            class="block w-full rounded-md border-slate-400 shadow-sm focus:border-brand-500 focus:ring focus:ring-brand-500 focus:ring-opacity-20 transition duration-150 ease-in-out sm:text-sm py-2.5 px-3 appearance-none"
+                            required>
                             @{
-                                var types = ViewBag.LeaveTypes as List<HRPermissionManagement.Models.LeaveType> ?? new List<HRPermissionManagement.Models.LeaveType>();
+                                var types = ViewBag.LeaveTypes as List<HRPermissionManagement.Models.LeaveType>;
+                                if(types == null) types = new List<HRPermissionManagement.Models.LeaveType>();
                             }
                             @foreach (var tip in types)
                             {
-                                <option value="@tip.Id">@tip.Name</option>
+                                    <option value="@tip.Id">@tip.Name</option>
                             }
                         </select>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label>Başlangıç Tarihi</label>
-                                <input type="date" asp-for="StartDate" class="form-control" required />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label>Bitiş Tarihi</label>
-                                <input type="date" asp-for="EndDate" class="form-control" required />
-                            </div>
+                        <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-500">
+                            <i class="fas fa-chevron-down text-xs"></i>
                         </div>
                     </div>
+                </div>
 
-                    <div class="mb-3">
-                        <label>Açıklama / Mazeret</label>
-                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="İzin nedeninizi kısaca belirtiniz..."></textarea>
+                <div id="date-range-container">
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label asp-for="StartDate" class="block text-sm font-medium text-slate-700 mb-1">Başlangıç
+                                Tarihi</label>
+                            <input type="date" asp-for="StartDate"
+                                class="block w-full rounded-md border-slate-400 shadow-sm focus:border-brand-500 focus:ring focus:ring-brand-500 focus:ring-opacity-20 transition duration-150 ease-in-out sm:text-sm py-2 px-3"
+                                required />
+                        </div>
+                        <div id="end-date-wrapper">
+                            <label asp-for="EndDate" class="block text-sm font-medium text-slate-700 mb-1">Bitiş
+                                Tarihi</label>
+                            <input type="date" asp-for="EndDate"
+                                class="block w-full rounded-md border-slate-400 shadow-sm focus:border-brand-500 focus:ring focus:ring-brand-500 focus:ring-opacity-20 transition duration-150 ease-in-out sm:text-sm py-2 px-3"
+                                required />
+                        </div>
+
+                        <!-- Hourly Inputs (Hidden by default) -->
+                        <div id="hourly-inputs" class="hiddencontents" style="display:none;">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label asp-for="StartHour" class="block text-sm font-medium text-slate-700 mb-1">Başlangıç Saati</label>
+                                    <input type="time" asp-for="StartHour" class="block w-full rounded-md border-slate-400 shadow-sm focus:border-brand-500 focus:ring focus:ring-brand-500 focus:ring-opacity-20 transition duration-150 ease-in-out sm:text-sm py-2 px-3">
+                                </div>
+                                <div>
+                                    <label asp-for="EndHour" class="block text-sm font-medium text-slate-700 mb-1">Bitiş Saati</label>
+                                    <input type="time" asp-for="EndHour" class="block w-full rounded-md border-slate-400 shadow-sm focus:border-brand-500 focus:ring focus:ring-brand-500 focus:ring-opacity-20 transition duration-150 ease-in-out sm:text-sm py-2 px-3">
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="d-flex justify-content-end">
-                        <a href="/Leave/Index" class="btn btn-outline-secondary mr-2">İptal</a>
-                        <button type="submit" class="btn btn-dark">
-                            <i class="fas fa-paper-plane"></i> Talebi Gönder
-                        </button>
-                    </div>
+                <div>
+                    <label asp-for="Description" class="block text-sm font-medium text-slate-700 mb-1">Açıklama /
+                        Mazeret</label>
+                    <textarea asp-for="Description"
+                        class="block w-full rounded-md border-slate-400 shadow-sm focus:border-brand-500 focus:ring focus:ring-brand-500 focus:ring-opacity-20 transition duration-150 ease-in-out sm:text-sm py-2 px-3"
+                        rows="4" placeholder="İzin nedeninizi kısaca belirtiniz..."></textarea>
+                </div>
 
-                </form>
-            </div>
+                <div class="flex items-center justify-end pt-4 border-t border-slate-100">
+                    <a href="/Leave/MyLeaves"
+                        class="mr-4 text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
+                        İptal
+                    </a>
+                    <button type="submit"
+                        class="inline-flex justify-center py-2.5 px-6 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 transition-colors">
+                        <i class="fas fa-paper-plane mr-2 mt-0.5"></i> Talebi Gönder
+                    </button>
+                </div>
+
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const leaveTypeSelect = document.getElementById('LeaveTypeId');
+        const hourlyInputs = document.getElementById('hourly-inputs');
+        const endDateWrapper = document.getElementById('end-date-wrapper');
+        const endDateInput = document.getElementById('EndDate');
+        const startDateInput = document.getElementById('StartDate');
+
+        // Leave Types Data passed from backend to know which one is Hourly
+        // We will construct a simple JS object from ViewBag
+        // Note: In a cleaner implementation, we could data-attribute the options
+        const leaveTypes = [];
+    @foreach (var tip in (ViewBag.LeaveTypes as List<HRPermissionManagement.Models.LeaveType>))
+    {
+        @:leaveTypes.push({ id: @tip.Id, isHourly: @(tip.IsHourly.ToString().ToLower()) });
+    }
+
+        function toggleInputs() {
+            const selectedId = parseInt(leaveTypeSelect.value);
+            const selectedType = leaveTypes.find(t => t.id === selectedId);
+
+            if (selectedType && selectedType.isHourly) {
+                // Show Hourly Inputs
+                hourlyInputs.style.display = 'block';
+                // Hide End Date Input (we will sync it automatically)
+                endDateWrapper.style.display = 'none';
+            } else {
+                // Hide Hourly Inputs
+                hourlyInputs.style.display = 'none';
+                // Show End Date Input
+                endDateWrapper.style.display = 'block';
+            }
+        }
+
+        // Initial check
+        toggleInputs();
+
+        // Listen for changes
+        leaveTypeSelect.addEventListener('change', toggleInputs);
+
+        // Sync EndDate with StartDate when in Hourly mode
+        startDateInput.addEventListener('change', function() {
+            const selectedId = parseInt(leaveTypeSelect.value);
+            const selectedType = leaveTypes.find(t => t.id === selectedId);
+
+            if (selectedType && selectedType.isHourly) {
+                endDateInput.value = startDateInput.value;
+            }
+        });
+    });
+</script>

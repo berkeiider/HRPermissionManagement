@@ -1,18 +1,15 @@
 ﻿using HRPermissionManagement.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace HRPermissionManagement.Data
+namespace HRPermissionManagement
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-        {
-        }
 
-        public DbSet<Employee> Employees { get; set; }
-        public DbSet<Department> Departments { get; set; }
-        public DbSet<LeaveType> LeaveTypes { get; set; }
-        public DbSet<LeaveRequest> LeaveRequests { get; set; }
+        public DbSet<Employee> Employees { get; set; } = null!;
+        public DbSet<Department> Departments { get; set; } = null!;
+        public DbSet<LeaveType> LeaveTypes { get; set; } = null!;
+        public DbSet<LeaveRequest> LeaveRequests { get; set; } = null!;
 
         // Başlangıç verilerini ve İlişki Ayarlarını Yapalım
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -62,9 +59,10 @@ namespace HRPermissionManagement.Data
 
             // İzin Türleri
             modelBuilder.Entity<LeaveType>().HasData(
-                new LeaveType { Id = 1, Name = "Yıllık İzin", DoesItAffectBalance = true },
-                new LeaveType { Id = 2, Name = "Hastalık Raporu", DoesItAffectBalance = false },
-                new LeaveType { Id = 3, Name = "Mazeret İzni", DoesItAffectBalance = true }
+                new LeaveType { Id = 1, Name = "Yıllık İzin", DoesItAffectBalance = true, IsHourly = false },
+                new LeaveType { Id = 2, Name = "Hastalık Raporu", DoesItAffectBalance = false, IsHourly = false },
+                new LeaveType { Id = 3, Name = "Mazeret İzni", DoesItAffectBalance = true, IsHourly = false },
+                new LeaveType { Id = 4, Name = "Saatlik İzin", DoesItAffectBalance = true, IsHourly = true }
             );
 
             base.OnModelCreating(modelBuilder);

@@ -100,7 +100,7 @@ namespace HRPermissionManagement.Migrations
 
             migrationBuilder.InsertData(
                 table: "Departments",
-                columns: new[] { "Id", "Name" },
+                columns: ["Id", "Name"],
                 values: new object[,]
                 {
                     { 1, "Yönetim" },
@@ -110,7 +110,7 @@ namespace HRPermissionManagement.Migrations
 
             migrationBuilder.InsertData(
                 table: "LeaveTypes",
-                columns: new[] { "Id", "DoesItAffectBalance", "Name" },
+                columns: ["Id", "DoesItAffectBalance", "Name"],
                 values: new object[,]
                 {
                     { 1, true, "Yıllık İzin" },
@@ -120,8 +120,8 @@ namespace HRPermissionManagement.Migrations
 
             migrationBuilder.InsertData(
                 table: "Employees",
-                columns: new[] { "Id", "AnnualLeaveRight", "DepartmentId", "Email", "IsAdmin", "Name", "Password", "StartDate", "Surname" },
-                values: new object[] { 1, 30, 1, "admin@sirket.com", true, "Admin", "123", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Yönetici" });
+                columns: ["Id", "AnnualLeaveRight", "DepartmentId", "Email", "IsAdmin", "Name", "Password", "StartDate", "Surname"],
+                values: [1, 30, 1, "admin@sirket.com", true, "Admin", "123", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Yönetici"]);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_DepartmentId",

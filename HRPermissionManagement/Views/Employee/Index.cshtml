@@ -4,61 +4,108 @@
     ViewData["Title"] = "Personel Listesi";
 }
 
-<div class="card mt-4">
-    <div class="card-header">
-        <h3 class="card-title">Personel Yönetimi</h3>
-        <div class="card-tools">
-            <a href="/Employee/Create" class="btn btn-dark btn-sm">
-                <i class="fas fa-user-plus"></i> Yeni Personel Ekle
+<div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-sm border border-brand-100 overflow-hidden animate-fade-in-up">
+    <div class="px-8 py-6 border-b border-brand-50 bg-gradient-to-r from-brand-50/50 to-white flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="flex-shrink-0">
+            <h3 class="text-xl font-black text-slate-800 flex items-center tracking-tight">
+                <span class="bg-brand-100 p-2 rounded-lg mr-3 shadow-inner">
+                    <i class="fas fa-users-cog text-brand-600"></i>
+                </span>
+                Personel Yönetimi
+            </h3>
+            <p class="text-sm text-slate-500 mt-1 ml-12">Tüm çalışanların listesi ve yönetimi</p>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <!-- Arama Formu -->
+            <form action="/Employee/Index" method="get" class="relative group w-full md:w-64">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-slate-400 group-focus-within:text-brand-500 transition-colors"></i>
+                </div>
+                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" 
+                       class="block w-full pl-10 pr-4 py-2.5 text-sm leading-5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all shadow-sm group-hover:border-brand-300" 
+                       placeholder="Personel veya Departman..">
+            </form>
+
+            <!-- Buton -->
+            <a href="/Employee/Create" class="inline-flex items-center justify-center px-5 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-brand-600 transition-all duration-300 shadow-lg hover:shadow-brand-500/30 transform hover:-translate-y-0.5 whitespace-nowrap">
+                <i class="fas fa-user-plus mr-2"></i> Yeni Personel Ekle
             </a>
         </div>
     </div>
-    <div class="card-body p-0">
-        <table class="table table-hover">
-            <thead>
+    
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-100">
+            <thead class="bg-slate-50/50">
                 <tr>
-                    <th>Ad Soyad</th>
-                    <th>Departman</th>
-                    <th>E-Posta</th>
-                    <th>İşe Giriş</th>
-                    <th>İzin Hakkı</th>
-                    <th>Rol</th>
-                    <th class="text-right">İşlemler</th>
+                    <th scope="col" class="px-8 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-widest">Ad Soyad</th>
+                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-widest">Departman</th>
+                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-widest">E-Posta</th>
+                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-widest">İşe Giriş</th>
+                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-widest">İzin Hakkı</th>
+                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-widest">Rol</th>
+                    <th scope="col" class="px-8 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-widest">İşlemler</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="bg-white divide-y divide-slate-50">
                 @foreach (var item in Model)
                 {
-                    <tr>
-                        <td class="font-weight-bold">@item.Name @item.Surname</td>
-                        <td>
-                            <span class="badge bg-light text-dark border">
+                    <tr class="hover:bg-brand-50/30 transition-all duration-200 group relative">
+                        <td class="px-8 py-5 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-11 w-11 relative">
+                                    <div class="h-11 w-11 rounded-full bg-gradient-to-br from-brand-100 to-brand-50 border-2 border-white shadow-md flex items-center justify-center text-brand-700 font-bold text-sm group-hover:scale-110 transition-transform duration-300">
+                                        @item.Name.Substring(0,1)@item.Surname.Substring(0,1)
+                                    </div>
+                                    @if(item.IsAdmin) {
+                                        <div class="absolute -bottom-1 -right-1 bg-red-500 rounded-full p-1 border-2 border-white" title="Yönetici">
+                                            <i class="fas fa-crown text-[8px] text-white"></i>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-bold text-slate-800 group-hover:text-brand-700 transition-colors">@item.Name @item.Surname</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5 whitespace-nowrap">
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full bg-slate-100 text-slate-600 border border-slate-200 group-hover:bg-white group-hover:shadow-sm transition-all">
                                 @item.Department?.Name
                             </span>
                         </td>
-                        <td>@item.Email</td>
-                        <td>@item.StartDate.ToString("dd.MM.yyyy")</td>
-                        <td>@item.AnnualLeaveRight Gün</td>
-                        <td>
+                        <td class="px-6 py-5 whitespace-nowrap text-sm text-slate-500 font-medium">@item.Email</td>
+                        <td class="px-6 py-5 whitespace-nowrap text-sm text-slate-500 font-medium">@item.StartDate.ToString("dd.MM.yyyy")</td>
+                        <td class="px-6 py-5 whitespace-nowrap text-sm font-bold text-slate-700">
+                             <span class="text-brand-600">@item.AnnualLeaveRight.ToString("0.##")</span> Gün
+                        </td>
+                        <td class="px-6 py-5 whitespace-nowrap">
                             @if (item.IsAdmin)
                             {
-                                <span class="badge bg-danger">Yönetici</span>
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full bg-red-50 text-red-600 border border-red-100">Yönetici</span>
                             }
                             else
                             {
-                                <span class="badge bg-info">Personel</span>
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full bg-blue-50 text-blue-600 border border-blue-100">Personel</span>
                             }
                         </td>
-                        <td class="text-right">
-                            <a href="/Employee/Edit/@item.Id" class="btn btn-outline-info btn-sm">
-                                <i class="fas fa-edit"></i>
-                            </a>
-
-                            <a href="/Employee/Delete/@item.Id"
-                               class="btn btn-outline-danger btn-sm"
-                               onclick="return confirm('Bu personeli silmek istediğinize emin misiniz?');">
-                                <i class="fas fa-trash"></i>
-                            </a>
+                        <td class="px-8 py-5 whitespace-nowrap text-right text-sm font-medium">
+                            <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex justify-end space-x-2">
+                                <a href="/Employee/Edit/@item.Id" class="text-slate-400 hover:text-brand-600 bg-white hover:bg-brand-50 p-2 rounded-lg border border-transparent hover:border-brand-100 transition-all shadow-sm" title="Düzenle">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                @if(!item.IsAdmin)
+                                {
+                                    <button onclick="confirmDelete(@item.Id, '@item.Name @item.Surname')" class="text-slate-400 hover:text-red-600 bg-white hover:bg-red-50 p-2 rounded-lg border border-transparent hover:border-red-100 transition-all shadow-sm" title="Sil">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                     <span class="text-slate-300 p-2 cursor-not-allowed" title="Yönetici Silinemez">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </span>
+                                }
+                            </div>
                         </td>
                     </tr>
                 }
@@ -66,3 +113,30 @@
         </table>
     </div>
 </div>
+
+<script>
+    function confirmDelete(id, name) {
+        Swal.fire({
+            title: 'Emin misiniz?',
+            text: `"${name}" adlı personeli silmek istediğinize emin misiniz? Bu işlem geri alınamaz!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#334155',
+            confirmButtonText: 'Evet, Sil!',
+            cancelButtonText: 'İptal',
+            background: '#fff',
+            color: '#1e293b',
+            iconColor: '#ef4444',
+            customClass: {
+                popup: 'rounded-2xl font-sans',
+                confirmButton: 'rounded-xl px-4 py-2 font-bold',
+                cancelButton: 'rounded-xl px-4 py-2 font-bold'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/Employee/Delete/' + id;
+            }
+        })
+    }
+</script>

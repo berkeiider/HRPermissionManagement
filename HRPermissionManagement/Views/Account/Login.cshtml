@@ -4,242 +4,150 @@
 
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Giriş Yap | HR Yönetim</title>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #fff;
-            height: 100vh;
-            overflow: hidden; /* Kaydırmayı engelle */
-        }
-
-        .row-full {
-            height: 100vh;
-            margin: 0;
-        }
-
-        /* --- SOL TARAF (Marka Alanı) --- */
-        .login-brand-section {
-            background-color: #1e293b; /* Sidebar ile aynı renk */
-            background-image: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Arka plan dekoratif daireler */
-        .decoration-circle {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .circle-1 {
-            width: 400px;
-            height: 400px;
-            top: -100px;
-            left: -100px;
-        }
-
-        .circle-2 {
-            width: 300px;
-            height: 300px;
-            bottom: 50px;
-            right: -50px;
-        }
-
-        .brand-content {
-            z-index: 2;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .brand-title {
-            font-weight: 700;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            letter-spacing: -1px;
-        }
-
-        .brand-subtitle {
-            font-weight: 300;
-            opacity: 0.8;
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
-
-        /* --- SAĞ TARAF (Form Alanı) --- */
-        .login-form-section {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #fff;
-        }
-
-        .login-wrapper {
-            width: 100%;
-            max-width: 400px;
-            padding: 40px;
-        }
-
-        .login-header {
-            margin-bottom: 40px;
-        }
-
-            .login-header h3 {
-                font-weight: 700;
-                color: #1e293b;
-                font-size: 1.75rem;
-            }
-
-            .login-header p {
-                color: #64748b;
-            }
-
-        /* Input Tasarımı */
-        .form-group label {
-            font-weight: 500;
-            color: #334155;
-            font-size: 0.9rem;
-        }
-
-        .form-control {
-            height: 50px;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            background-color: #f8fafc;
-            padding-left: 20px;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-            .form-control:focus {
-                background-color: #fff;
-                border-color: #3b82f6;
-                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-            }
-
-        /* Buton Tasarımı */
-        .btn-login {
-            height: 50px;
-            border-radius: 10px;
-            background-color: #1e293b;
-            color: #fff;
-            font-weight: 600;
-            font-size: 1rem;
-            border: none;
-            transition: transform 0.2s;
-            margin-top: 20px;
-        }
-
-            .btn-login:hover {
-                background-color: #0f172a;
-                transform: translateY(-2px);
-                color: #fff;
-            }
-
-        .footer-text {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #94a3b8;
-        }
-    </style>
+    <link rel="stylesheet" href="~/css/output.css">
 </head>
-<body>
 
-    <div class="row row-full">
+<body class="font-sans antialiased h-screen overflow-hidden bg-slate-900 selection:bg-brand-500 selection:text-white">
 
-        <div class="col-lg-6 d-none d-lg-flex login-brand-section">
-            <div class="decoration-circle circle-1"></div>
-            <div class="decoration-circle circle-2"></div>
+    <div class="flex h-full w-full relative">
 
-            <div class="brand-content">
-                <div class="mb-4">
-                    <i class="fas fa-layer-group fa-4x"></i>
+        <!-- Animated Background Elements -->
+        <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+            <div
+                class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-brand-500/20 blur-[120px] animate-pulse-slow">
+            </div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-violet-600/20 blur-[120px] animate-pulse-slow"
+                style="animation-delay: 2s;"></div>
+            <div
+                class="absolute top-[40%] left-[40%] w-[20%] h-[20%] rounded-full bg-blue-500/10 blur-[80px] animate-bounce-slow">
+            </div>
+        </div>
+
+        <!-- Left Section (Brand) -->
+        <div class="hidden lg:flex w-1/2 relative z-10 flex-col justify-center items-center text-white p-12">
+            <div
+                class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 shadow-2xl animate-fade-in-up">
+                <div class="mb-8 text-transparent bg-clip-text bg-gradient-to-r from-brand-300 to-violet-300">
+                    <i class="fas fa-layer-group fa-5x filter drop-shadow-lg"></i>
                 </div>
-                <h1 class="brand-title">HR YÖNETİM</h1>
-                <p class="brand-subtitle">
-                    Personel izinleri, departman yönetimi ve<br>
-                    kurumsal süreçleriniz artık tek bir noktada.
+                <h1 class="text-5xl font-black mb-6 tracking-tighter leading-tight">
+                   HR <span class="text-brand-400">YÖNETİM</span>
+                </h1>
+                <p class="text-xl text-slate-300 font-medium leading-relaxed max-w-md mx-auto text-center">
+                    Geleceğin İnsan Kaynakları Yönetimi ile tanışın. Hızlı, güvenli ve modern.
                 </p>
             </div>
         </div>
 
-        <div class="col-lg-6 login-form-section">
-            <div class="login-wrapper">
+        <!-- Right Section (Form) -->
+        <div class="w-full lg:w-1/2 flex items-center justify-center relative z-10">
+            <div class="w-full max-w-md px-8 py-10 m-4 bg-white/5 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 animate-fade-in-up"
+                style="animation-delay: 200ms;">
 
-                <div class="login-header">
-                    <h3>Tekrar Hoşgeldiniz!</h3>
-                    <p>Devam etmek için lütfen giriş yapın.</p>
+                <div class="mb-8 text-center">
+                    <h3 class="text-3xl font-bold text-white mb-2">Hoşgeldiniz</h3>
+                    <p class="text-slate-400">Hesabınıza erişmek için giriş yapın.</p>
                 </div>
 
                 @if (ViewBag.Error != null)
                 {
-                    <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 10px; font-size: 0.9rem;">
-                        <i class="fas fa-exclamation-circle mr-2"></i> @ViewBag.Error
+                    <div
+                        class="bg-red-500/20 border border-red-500/50 p-4 mb-6 rounded-xl backdrop-blur-sm animate-fade-in">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-circle text-red-400"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-red-200">@ViewBag.Error</p>
+                            </div>
+                        </div>
                     </div>
                 }
 
-                <form action="/Account/Login" method="post">
-                    <div class="form-group">
-                        <label>E-Posta Adresi</label>
-                        <input type="email" name="email" class="form-control" placeholder="ornek@sirket.com" required>
-                    </div>
-
-                    <div class="form-group mb-4">
-                        <label>Şifre</label>
-                        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
-                    </div>
-
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="rememberMe">
-                            <label class="custom-control-label text-muted" for="rememberMe" style="font-weight: 400;">Beni Hatırla</label>
+                <form action="/Account/Login" method="post" class="space-y-6">
+                    <div class="group">
+                        <label for="email"
+                            class="block text-sm font-medium text-slate-300 mb-2 group-focus-within:text-brand-400 transition-colors">E-Posta
+                            Adresi</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i
+                                    class="fas fa-envelope text-slate-500 group-focus-within:text-brand-400 transition-colors"></i>
+                            </div>
+                            <input type="email" name="email" id="email"
+                                class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:bg-slate-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all duration-200"
+                                placeholder="ornek@sirket.com" required>
                         </div>
-                        <a href="/Account/ForgotPassword" class="text-primary small" style="text-decoration: none;">Şifremi Unuttum?</a>
                     </div>
 
-                    <button type="submit" class="btn btn-login btn-block">
-                        Giriş Yap <i class="fas fa-arrow-right ml-2"></i>
+                    <div class="group">
+                        <label for="password"
+                            class="block text-sm font-medium text-slate-300 mb-2 group-focus-within:text-brand-400 transition-colors">Şifre</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i
+                                    class="fas fa-lock text-slate-500 group-focus-within:text-brand-400 transition-colors"></i>
+                            </div>
+                            <input type="password" name="password" id="password"
+                                class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:bg-slate-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all duration-200"
+                                placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="rememberMe"
+                                class="h-4 w-4 bg-slate-800 border-slate-600 rounded text-brand-500 focus:ring-brand-500 focus:ring-offset-slate-900 transition-colors">
+                            <label for="rememberMe"
+                                class="ml-2 block text-sm text-slate-400 select-none cursor-pointer hover:text-slate-300 transition-colors">Beni
+                                Hatırla</label>
+                        </div>
+                        <a href="/Account/ForgotPassword"
+                            class="text-sm font-medium text-brand-400 hover:text-brand-300 transition-colors">Şifremi
+                            Unuttum?</a>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-gradient-to-r from-brand-600 to-violet-600 hover:from-brand-500 hover:to-violet-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-brand-600/30 hover:shadow-brand-600/50 transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center">
+                        <span>Giriş Yap</span>
+                        <i class="fas fa-arrow-right ml-2 opacity-80"></i>
                     </button>
                 </form>
 
-                <div class="footer-text">
+                <p class="mt-8 text-center text-xs text-slate-500">
                     &copy; @DateTime.Now.Year HR Permission Management System
-                </div>
-
+                </p>
             </div>
         </div>
 
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        $(function() {
+        $(function () {
             var urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('ReturnUrl')) {
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
                     showConfirmButton: false,
-                    timer: 3000
+                    timer: 3000,
+                    background: '#1e293b',
+                    color: '#fff'
                 });
                 Toast.fire({
                     icon: 'info',
@@ -249,4 +157,5 @@
         });
     </script>
 </body>
+
 </html>

@@ -1,5 +1,4 @@
-﻿using HRPermissionManagement.Data;
-using HRPermissionManagement.Models;
+﻿using HRPermissionManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,14 +6,9 @@ using Microsoft.EntityFrameworkCore;
 namespace HRPermissionManagement.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class EmployeeController : Controller
+    public class EmployeeController(AppDbContext context) : Controller
     {
-        private readonly AppDbContext _context;
-
-        public EmployeeController(AppDbContext context)
-        {
-            _context = context;
-        }
+        private readonly AppDbContext _context = context;
 
         // 1. LİSTELEME
         public IActionResult Index()
@@ -80,6 +74,11 @@ namespace HRPermissionManagement.Controllers
         {
             // Veritabanındaki mevcut (eski) kaydı, takip edilmeyen (NoTracking) modda çekiyoruz.
             var mevcutPersonel = _context.Employees.AsNoTracking().FirstOrDefault(x => x.Id == model.Id);
+
+            if (mevcutPersonel == null)
+            {
+                return NotFound();
+            }
 
             if (ModelState.IsValid)
             {
