@@ -52,7 +52,7 @@ namespace HRPermissionManagement.Data
                     Surname = "Yönetici",
                     Email = "admin@sirket.com",
                     // ŞİFRE: "123" yerine MD5 Hashlenmiş hali
-                    Password = "202CB962AC59075B964B07152D234B70",
+                    Password = "VlDqHS/Wf9Zx42uwF2kf4IbXZ8UaBIPU+v79SiOaJsw=:tSMfCNcVqZVrzchaOJ5JwqNpKsV62fGRtBIDQmsB4mE=",
                     DepartmentId = 1,
                     IsAdmin = true,
                     AnnualLeaveRight = 30,

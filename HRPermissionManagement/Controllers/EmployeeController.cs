@@ -40,7 +40,7 @@ namespace HRPermissionManagement.Controllers
             if (ModelState.IsValid)
             {
                 // Yeni kayıtta şifre boş olamaz, hashleyip kaydediyoruz
-                model.Password = HRPermissionManagement.Helpers.Hasher.DoMD5(model.Password);
+                model.Password = HRPermissionManagement.Helpers.Hasher.HashPassword(model.Password);
 
                 _context.Employees.Add(model);
                 _context.SaveChanges();
@@ -94,7 +94,7 @@ namespace HRPermissionManagement.Controllers
                 {
                     // EĞER KUTU DOLUYSA: Kullanıcı yeni şifre girmiş.
                     // Yeni şifreyi Hash'le
-                    model.Password = HRPermissionManagement.Helpers.Hasher.DoMD5(model.Password);
+                    model.Password = HRPermissionManagement.Helpers.Hasher.HashPassword(model.Password);
                 }
                 // -----------------------------
 

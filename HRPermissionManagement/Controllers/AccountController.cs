@@ -25,13 +25,11 @@ namespace HRPermissionManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
-            // Girilen şifreyi MD5 yapıp öyle arıyoruz
-            string hashedPassword = HRPermissionManagement.Helpers.Hasher.DoMD5(password);
+            // First find user by email
+            var user = _context.Employees.FirstOrDefault(x => x.Email == email);
 
-            var user = _context.Employees.FirstOrDefault(x => x.Email == email && x.Password == hashedPassword);
-
-
-            if (user != null)
+            // Verify password using the secure helper
+            if (user != null && HRPermissionManagement.Helpers.Hasher.VerifyPassword(password, user.Password))
             {
                 var claims = new List<Claim>
                 {

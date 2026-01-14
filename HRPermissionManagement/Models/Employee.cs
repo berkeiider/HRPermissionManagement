@@ -17,6 +17,7 @@ namespace HRPermissionManagement.Models
         public string Email { get; set; } = string.Empty;
 
         [Required]
+        [MaxLength(255)]
         public string Password { get; set; } = string.Empty;
 
         public int AnnualLeaveRight { get; set; } = 14;
