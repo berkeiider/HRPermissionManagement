@@ -7,25 +7,22 @@ using System.Security.Claims;
 namespace HRPermissionManagement.Controllers
 {
     [Authorize]
-    public class LeaveController(AppDbContext context) : Controller
+    public class LeaveController(AppDbContext context, HRPermissionManagement.Helpers.SessionHelper session) : Controller
     {
         private readonly AppDbContext _context = context;
+        private readonly HRPermissionManagement.Helpers.SessionHelper _session = session;
+        private const double WORK_HOURS = 9.0;
 
         // 1. YÖNETİM LİSTESİ (Admin Tümünü, Müdür Departmanını Görür)
         public IActionResult Index()
         {
-            var employeeIdClaim = User.FindFirst("EmployeeId");
-            if (employeeIdClaim == null) return RedirectToAction("Login", "Account");
+            int? currentUserId = _session.GetCurrentUserId();
+            if (currentUserId == null) return RedirectToAction("Login", "Account");
 
-            int currentUserId = int.Parse(employeeIdClaim.Value);
-            bool isAdmin = User.IsInRole("Admin");
+            bool isAdmin = _session.IsAdmin();
 
             // Kişinin yönettiği departmanları bul
-            var managedDepartmentIds = _context.Departments
-                                               .Where(d => d.ManagerId == currentUserId)
-                                               .Select(d => d.Id)
-                                               .ToList();
-
+            var managedDepartmentIds = _session.GetManagedDepartmentIds(currentUserId.Value);
             bool isManager = managedDepartmentIds.Count != 0;
 
             IQueryable<LeaveRequest> query = _context.LeaveRequests
@@ -38,7 +35,6 @@ namespace HRPermissionManagement.Controllers
                 // 1. Yöneticilerin onayladığı ve son onay bekleyenler (Status == YoneticiOnayladi)
                 // 2. Doğrudan Yöneticilerin kendilerinin talep ettiği izinler (Status == Bekliyor ve Talep Eden Bir Yönetici ise)
 
-                // Sistemdeki yöneticilerin ID listesi
                 var managerIds = _context.Departments.Select(d => d.ManagerId).Distinct().ToList();
 
                 query = query.Where(x =>
@@ -50,9 +46,8 @@ namespace HRPermissionManagement.Controllers
             {
                 // MÜDÜR GÖREVLERİ:
                 // Sadece kendi departmanındaki personelin "Bekliyor" taleplerini görür.
-                // Kendi talebini burada görmemeli (Onu MyLeaves'de görür).
                 query = query.Where(x =>
-                    x.EmployeeId != currentUserId && // Kendi talebini onaylayamasın
+                    x.EmployeeId != currentUserId.Value && // Kendi talebini onaylayamasın
                     x.Status == LeaveStatus.Bekliyor &&
                     x.Employee != null &&
                     managedDepartmentIds.Contains(x.Employee.DepartmentId)
@@ -60,7 +55,6 @@ namespace HRPermissionManagement.Controllers
             }
             else
             {
-                // Normal personel bu sayfaya erişirse boş liste dönsün veya kendi sayfasına yönlensin
                 return RedirectToAction("MyLeaves");
             }
 
@@ -77,29 +71,24 @@ namespace HRPermissionManagement.Controllers
         [HttpGet]
         public IActionResult MyLeaves()
         {
-            var employeeIdClaim = User.FindFirst("EmployeeId");
-            if (employeeIdClaim == null) return RedirectToAction("Login", "Account");
+            int? currentUserId = _session.GetCurrentUserId();
+            if (currentUserId == null) return RedirectToAction("Login", "Account");
 
-            int currentUserId = int.Parse(employeeIdClaim.Value);
-
-            // Sadece giriş yapan kullanıcının izinlerini çekiyoruz
             var myLeaves = _context.LeaveRequests
                                    .Include(x => x.Employee)
                                    .Include(x => x.LeaveType)
-                                   .Where(x => x.EmployeeId == currentUserId)
-                                   .OrderByDescending(x => x.RequestDate) // En yeni en üstte
+                                   .Where(x => x.EmployeeId == currentUserId.Value)
+                                   .OrderByDescending(x => x.RequestDate)
                                    .ToList();
 
             return View(myLeaves);
         }
-        // -------------------------------------------------------------------
 
         // 2. TALEP OLUŞTURMA SAYFASI (GET)
         [HttpGet]
         public IActionResult Create()
         {
             var types = _context.LeaveTypes.ToList();
-            // Sıralama: Yıllık İzin (öncelikli), Saatlik İzin (ikinci), diğerleri alfabetik
             var sortedTypes = types.OrderBy(x =>
             {
                 if (x.Name == "Yıllık İzin") return 1;
@@ -115,7 +104,6 @@ namespace HRPermissionManagement.Controllers
         [HttpPost]
         public IActionResult Create(LeaveRequest model)
         {
-            // 0. İzin Türünü Çek (Saatlik mi değil mi?)
             var leaveType = _context.LeaveTypes.Find(model.LeaveTypeId);
             if (leaveType == null)
             {
@@ -129,7 +117,6 @@ namespace HRPermissionManagement.Controllers
             // D. Gün Hesabı (Saatlik veya Günlük)
             if (model.StartHour.HasValue && model.EndHour.HasValue)
             {
-                // Saatlik İzin
                 if (model.StartDate.Date != model.EndDate.Date)
                 {
                     ModelState.AddModelError("", "Saatlik izinler aynı gün içinde olmalıdır.");
@@ -140,8 +127,7 @@ namespace HRPermissionManagement.Controllers
                 if (model.EndHour <= model.StartHour)
                 {
                     ModelState.AddModelError("", "Bitiş saati başlangıç saatinden büyük olmalıdır.");
-                    var types = _context.LeaveTypes.ToList();
-                    ViewBag.LeaveTypes = types.OrderBy(x => { if (x.Name == "Yıllık İzin") return 1; if (x.Name == "Saatlik İzin") return 2; return 3; }).ThenBy(x => x.Name).ToList();
+                    ViewBag.LeaveTypes = _context.LeaveTypes.ToList();
                     return View(model);
                 }
 
@@ -154,27 +140,24 @@ namespace HRPermissionManagement.Controllers
                     return View(model);
                 }
 
-                // Mesai saatini 9 saat varsayıyoruz
-                model.NumberOfDays = totalHours / 9.0;
+                model.NumberOfDays = totalHours / WORK_HOURS;
             }
             else
             {
-                // Günlük İzin (Eski Mantık)
                 TimeSpan fark = model.EndDate - model.StartDate;
-                model.NumberOfDays = fark.TotalDays + 1; // Tam gün
+                model.NumberOfDays = fark.TotalDays + 1;
             }
 
             model.RequestDate = DateTime.Now;
 
             // B. Kullanıcı ID'sini Al
-            var employeeIdClaim = User.FindFirst("EmployeeId");
-            if (employeeIdClaim == null) return RedirectToAction("Login", "Account");
-            int empId = int.Parse(employeeIdClaim.Value);
-            model.EmployeeId = empId;
+            int? empId = _session.GetCurrentUserId();
+            if (empId == null) return RedirectToAction("Login", "Account");
+            model.EmployeeId = empId.Value;
 
             // C. ÇAKIŞAN İZİN KONTROLÜ
             bool isOverlap = _context.LeaveRequests.Any(x =>
-                x.EmployeeId == empId &&
+                x.EmployeeId == empId.Value &&
                 x.Status != LeaveStatus.Reddedildi &&
                 (
                     (model.StartDate >= x.StartDate && model.StartDate <= x.EndDate) ||
@@ -194,12 +177,10 @@ namespace HRPermissionManagement.Controllers
             _context.SaveChanges();
 
             TempData["Success"] = "İzin talebiniz başarıyla oluşturuldu.";
-
-            // Talep oluşturduktan sonra "İzinlerim" sayfasına yönlendiriyoruz
             return RedirectToAction("MyLeaves");
         }
 
-        // 4. ONAYLAMA (Logic Update: Personel -> Müdür -> Admin)
+        // 4. ONAYLAMA
         public IActionResult Approve(int id)
         {
             var talep = _context.LeaveRequests
@@ -209,45 +190,37 @@ namespace HRPermissionManagement.Controllers
 
             if (talep == null) return NotFound();
 
-            var employeeIdClaim = User.FindFirst("EmployeeId");
-            if (employeeIdClaim == null) return RedirectToAction("Login", "Account");
+            int? currentUserId = _session.GetCurrentUserId();
+            if (currentUserId == null) return RedirectToAction("Login", "Account");
 
-            int currentUserId = int.Parse(employeeIdClaim.Value);
-            bool isAdmin = User.IsInRole("Admin");
+            bool isAdmin = _session.IsAdmin();
 
-            // Yetki Kontrolü: Admin mi veya talep sahibinin yöneticisi mi?
             bool isManagerOfRequester = false;
             if (talep.Employee != null)
             {
-                isManagerOfRequester = _context.Departments.Any(d => d.Id == talep.Employee.DepartmentId && d.ManagerId == currentUserId);
+                isManagerOfRequester = _context.Departments.Any(d => d.Id == talep.Employee.DepartmentId && d.ManagerId == currentUserId.Value);
             }
 
             if (!isAdmin && !isManagerOfRequester) return Unauthorized();
 
-            // Yöneticiler kendi izinlerini onaylayamaz (Admin hariç, Admin tek otorite olabilir)
-            if (talep.EmployeeId == currentUserId && !isAdmin)
+            if (talep.EmployeeId == currentUserId.Value && !isAdmin)
             {
                 TempData["Error"] = "Yöneticiler kendi izinlerini onaylayamaz!";
                 return RedirectToAction("Index");
             }
 
-            // --- SENARYO 1: YÖNETİCİ ONAYLIYOR (Admin Değil) ---
             if (isManagerOfRequester && !isAdmin && talep.Status == LeaveStatus.Bekliyor)
             {
-                // Yönetici onayladığında süreç bitmez, Admin'e düşer.
                 talep.Status = LeaveStatus.YoneticiOnayladi;
                 _context.SaveChanges();
                 TempData["Success"] = "İzin onaylandı ve İnsan Kaynakları'na iletildi.";
             }
-            // --- SENARYO 2: ADMIN ONAYLIYOR (Son Karar) ---
             else if (isAdmin)
             {
-                // Admin, hem "Bekliyor" (Müdürün izniyse) hem de "YoneticiOnayladi" durumundakileri kesin onaylar.
                 if (talep.Status == LeaveStatus.Bekliyor || talep.Status == LeaveStatus.YoneticiOnayladi)
                 {
                     talep.Status = LeaveStatus.Onaylandi;
 
-                    // İzin bakiyesinden düş
                     if (talep.LeaveType != null && talep.LeaveType.DoesItAffectBalance)
                     {
                         if (talep.Employee != null)
@@ -269,21 +242,19 @@ namespace HRPermissionManagement.Controllers
             var talep = _context.LeaveRequests.Include(x => x.Employee).FirstOrDefault(x => x.Id == id);
             if (talep == null) return NotFound();
 
-            var employeeIdClaim = User.FindFirst("EmployeeId");
-            if (employeeIdClaim == null) return RedirectToAction("Login", "Account");
+            int? currentUserId = _session.GetCurrentUserId();
+            if (currentUserId == null) return RedirectToAction("Login", "Account");
 
-            int currentUserId = int.Parse(employeeIdClaim.Value);
-            bool isAdmin = User.IsInRole("Admin");
+            bool isAdmin = _session.IsAdmin();
 
             bool isManagerOfRequester = false;
             if (talep.Employee != null)
             {
-                isManagerOfRequester = _context.Departments.Any(d => d.Id == talep.Employee.DepartmentId && d.ManagerId == currentUserId);
+                isManagerOfRequester = _context.Departments.Any(d => d.Id == talep.Employee.DepartmentId && d.ManagerId == currentUserId.Value);
             }
 
             if (!isAdmin && !isManagerOfRequester) return Unauthorized();
 
-            // Bekliyor veya YoneticiOnayladi durumundaysa reddedilebilir
             if (talep.Status == LeaveStatus.Bekliyor || talep.Status == LeaveStatus.YoneticiOnayladi)
             {
                 talep.Status = LeaveStatus.Reddedildi;
@@ -307,26 +278,19 @@ namespace HRPermissionManagement.Controllers
             return View(talep);
         }
 
-        // 7. YÖNETİM PANELİ İÇİN İZİN GEÇMİŞİ (Sadece Tamamlananlar) - YENİ EKLENDİ
+        // 7. YÖNETİM PANELİ İÇİN İZİN GEÇMİŞİ
         public IActionResult History()
         {
-            var employeeIdClaim = User.FindFirst("EmployeeId");
-            if (employeeIdClaim == null) return RedirectToAction("Login", "Account");
+            int? currentUserId = _session.GetCurrentUserId();
+            if (currentUserId == null) return RedirectToAction("Login", "Account");
 
-            int currentUserId = int.Parse(employeeIdClaim.Value);
-            bool isAdmin = User.IsInRole("Admin");
+            bool isAdmin = _session.IsAdmin();
 
-            // Yöneticinin departmanlarını bul
-            var managedDepartmentIds = _context.Departments
-                                               .Where(d => d.ManagerId == currentUserId)
-                                               .Select(d => d.Id)
-                                               .ToList();
+            var managedDepartmentIds = _session.GetManagedDepartmentIds(currentUserId.Value);
             bool isManager = managedDepartmentIds.Count != 0;
 
-            // Yetkisiz giriş denemesi (Ne admin ne müdürse ana sayfaya at)
             if (!isAdmin && !isManager) return RedirectToAction("MyLeaves");
 
-            // Temel Sorgu: Sadece Onaylanan veya Reddedilen (Biten) İşlemler
             var query = _context.LeaveRequests
                                 .Include(x => x.Employee)
                                 .ThenInclude(e => e!.Department)
@@ -335,11 +299,9 @@ namespace HRPermissionManagement.Controllers
 
             if (!isAdmin)
             {
-                // Yönetici ise SADECE kendi departmanındaki personelleri görsün
                 query = query.Where(x => x.Employee != null && managedDepartmentIds.Contains(x.Employee.DepartmentId));
             }
 
-            // Listeyi tarihe göre (en yeni en üstte) sırala
             var historyList = query.OrderByDescending(x => x.StartDate).ToList();
 
             return View(historyList);

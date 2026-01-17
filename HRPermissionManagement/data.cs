@@ -48,8 +48,8 @@ namespace HRPermissionManagement
                     Name = "Admin",
                     Surname = "Yönetici",
                     Email = "admin@sirket.com",
-                    // ŞİFRE: "123" yerine MD5 Hashlenmiş hali
-                    Password = "202CB962AC59075B964B07152D234B70",
+                    // PASSWORD: "123" (SHA256 Hashed)
+                    Password = "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
                     DepartmentId = 1,
                     IsAdmin = true,
                     AnnualLeaveRight = 30,

@@ -14,7 +14,10 @@ builder.Services.AddAuthentication("CookieAuth")
     });
 
 // Add services to the container.
+// Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<HRPermissionManagement.Helpers.SessionHelper>();
 
 var app = builder.Build();
 

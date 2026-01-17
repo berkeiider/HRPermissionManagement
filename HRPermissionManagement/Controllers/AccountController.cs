@@ -20,8 +20,8 @@ namespace HRPermissionManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
-            // Girilen şifreyi MD5 yapıp öyle arıyoruz
-            string hashedPassword = HRPermissionManagement.Helpers.Hasher.DoMD5(password);
+            // Girilen şifreyi (SHA256) Hash'leyip arıyoruz
+            string hashedPassword = HRPermissionManagement.Helpers.Hasher.HashPassword(password);
 
             var user = _context.Employees.FirstOrDefault(x => x.Email == email && x.Password == hashedPassword);
 
@@ -85,8 +85,8 @@ namespace HRPermissionManagement.Controllers
                 Random rnd = new();
                 string yeniSifre = rnd.Next(100000, 999999).ToString();
 
-                // 2. Veritabanına şifreyi MD5 olarak kaydet
-                user.Password = HRPermissionManagement.Helpers.Hasher.DoMD5(yeniSifre);
+                // 2. Veritabanına şifreyi SHA256 olarak kaydet
+                user.Password = HRPermissionManagement.Helpers.Hasher.HashPassword(yeniSifre);
                 _context.SaveChanges();
 
                 // 3. MAİL GÖNDERME AYARLARI (GMAIL ÖRNEĞİ)
